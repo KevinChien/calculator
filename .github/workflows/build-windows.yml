@@ -27,7 +27,7 @@ jobs:
           python -m PyInstaller -y --clean --onefile --name calculator_gui --windowed calculator/gui.py
 
       - name: List dist
-        run: dir dist\* /S
+        run: dir dist /S
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
