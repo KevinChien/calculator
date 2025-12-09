@@ -33,22 +33,14 @@ def main():
                 try:
                     messagebox.showerror("Evaluation error", tb)
                 except Exception:
-                    # if messagebox fails (rare), fallback to setting the entry text
                     expr.set("Error")
-                # write a small error log to current working directory
                 try:
                     with open("error_log.txt", "a", encoding="utf-8") as f:
                         f.write(tb + "\n")
                 except Exception:
                     pass
-        elif txt == "^":
-            expr.set(expr.get() + "**")
-        elif txt in ("sin","cos","tan","sqrt","log","pi","e"):
-            if txt in ("pi","e"):
-                expr.set(expr.get() + txt)
-            else:
-                expr.set(expr.get() + txt + "(")
         else:
+            # 其餘全部直接拼接到輸入欄（只允許使用者輸入的字元）
             expr.set(expr.get() + txt)
 
     # 鍵盤支援：Enter 評估, Esc 清除, Backspace 自然運作
@@ -65,12 +57,8 @@ def main():
         ("4", 2, 0), ("5", 2, 1), ("6", 2, 2), ("*", 2, 3),
         ("1", 3, 0), ("2", 3, 1), ("3", 3, 2), ("-", 3, 3),
         ("0", 4, 0), (".", 4, 1), ("(", 4, 2), (")", 4, 3),
-        ("C", 5, 0), ("⌫", 5, 1), ("^", 5, 2), ("=", 5, 3),
+        ("C", 5, 0), ("⌫", 5, 1), ("+", 5, 2), ("=", 5, 3),
     ]
-
-    # row 6: function keys
-    func_buttons = [("sin", 6, 0), ("cos", 6, 1), ("tan", 6, 2), ("sqrt", 6, 3),
-                    ("log", 7, 0), ("pi", 7, 1), ("e", 7, 2),]
 
     for b in buttons:
         if len(b) == 3:
@@ -80,14 +68,11 @@ def main():
             text, r, c, cs = b
             _make_button(root, text, r, c, on_click, colspan=cs)
 
-    for i in range(8):
+    for i in range(6):
         root.grid_rowconfigure(i, weight=1)
     for i in range(4):
         root.grid_columnconfigure(i, weight=1)
-
-    for b in func_buttons:
-        text, r, c = b
-        _make_button(root, text, r, c, on_click)
+    
 
     root.mainloop()
 
