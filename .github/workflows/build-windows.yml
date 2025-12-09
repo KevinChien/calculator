@@ -1,0 +1,36 @@
+name: Build Windows executable
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller
+
+      - name: Build GUI exe with PyInstaller
+        run: |
+          python -m PyInstaller -y --clean --onefile --name calculator_gui --windowed calculator/gui.py
+
+      - name: List dist
+        run: dir dist\* /S
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: calculator_gui
+          path: dist\calculator_gui.exe
