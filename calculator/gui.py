@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import messagebox
+import traceback
 from calculator.core import evaluate
 
 
@@ -25,8 +27,20 @@ def main():
             try:
                 res = evaluate(expr.get())
                 expr.set(str(res))
-            except Exception:
-                expr.set("Error")
+            except Exception as e:
+                # show detailed error to the user and log it for debugging
+                tb = traceback.format_exc()
+                try:
+                    messagebox.showerror("Evaluation error", tb)
+                except Exception:
+                    # if messagebox fails (rare), fallback to setting the entry text
+                    expr.set("Error")
+                # write a small error log to current working directory
+                try:
+                    with open("error_log.txt", "a", encoding="utf-8") as f:
+                        f.write(tb + "\n")
+                except Exception:
+                    pass
         elif txt == "^":
             expr.set(expr.get() + "**")
         elif txt in ("sin","cos","tan","sqrt","log","pi","e"):
